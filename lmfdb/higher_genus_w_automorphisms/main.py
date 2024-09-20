@@ -508,14 +508,14 @@ def parse_range2_extend(arg, key, parse_singleton=int, parse_endpoint=None, inst
         for a in tmp:
             if a[0] == key:
                 if len(a) == 3:
-                    ret.append({a[0]:a[1], 'genus': a[2]})
+                    ret.append({a[0]: a[1], 'genus': a[2]})
                 else:
-                    ret.append({a[0]:a[1]})
+                    ret.append({a[0]: a[1]})
             else:
-                for ai in a:
-                    ret.append({ai[0]: ai[1], 'genus': ai[2]})
+                ret.extend({ai[0]: ai[1], 'genus': ai[2]}
+                           for ai in a)
         return ['$or', ret]
-    elif 'g' in arg: # linear function of variable g (ax+b)
+    elif 'g' in arg:  # linear function of variable g (ax+b)
         if GENUS_RE.match(arg):
             a = GENUS_RE.match(arg).groups()[0]
             genus_list = sorted(db.hgcwa_passports.distinct('genus'))
@@ -745,12 +745,12 @@ def render_family(args):
                 Lall.append([cc_display(ast.literal_eval(dat['con'])),dat['passport_label'],
                              urlstrng,dat['cc']])
 
-            #Topological equivalence
+            # Topological equivalence
             if 'topological' in dat:
                 if dat['topological'] == dat['cc']:
-                    x1 = [] #A list of permutations of generating vectors of topo_rep
-                    for perm in dat['gen_vectors']:
-                        x1.append(sep.join(split_perm(Permutation(perm).cycle_string())))
+                    # A list of permutations of generating vectors of topo_rep
+                    x1 = [sep.join(split_perm(Permutation(perm).cycle_string()))
+                          for perm in dat['gen_vectors']]
                     Ltopo_rep.append([dat['total_label'],
                                       x1,
                                       dat['label'],
@@ -915,21 +915,21 @@ def render_passport(args):
         info.update({'genvects': Ldata, 'HypColumn': HypColumn})
         info.update({'passport_cc': cc_display(ast.literal_eval(data['con']))})
 
-        #Generate braid representatives
+        # Generate braid representatives
         if 'braid' in dataz[0]:
-            braid_data = [entry for entry in dataz if entry['braid'] == entry['cc']]
+            braid_data = [entry for entry in dataz
+                          if entry['braid'] == entry['cc']]
             for dat in braid_data:
-                x5 = []
-                for perm in dat['gen_vectors']:
-                    x5.append(sep.join(split_perm(Permutation(perm).cycle_string())))
+                x5 = [sep.join(split_perm(Permutation(perm).cycle_string()))
+                      for perm in dat['gen_vectors']]
                 Lbraid.append([dat['total_label'], x5])
 
         braid_length = len(Lbraid)
 
-        #Add braid equivalence into info
+        # Add braid equivalence into info
         info.update({'braid': Lbraid,
-                    'braid_numb': braid_length,
-                    'braid_disp_numb': min(braid_length, numbraidreps)})
+                     'braid_numb': braid_length,
+                     'braid_disp_numb': min(braid_length, numbraidreps)})
 
         if 'eqn' in data:
             info.update({'eqns': data['eqn']})

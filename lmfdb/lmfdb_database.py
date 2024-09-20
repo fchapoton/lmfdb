@@ -408,10 +408,10 @@ class LMFDBDatabase(PostgresDatabase):
                         types = verifier.all_types()
                     else:
                         types = [verifier.speedtype(speedtype)]
-                for typ in types:
-                    if verifier.get_checks_count(typ) != 0:
-                        tabletypes.append("%s.%s" % (tablename, typ.shortname))
-        if len(tabletypes) == 0:
+                tabletypes.extend("%s.%s" % (tablename, typ.shortname)
+                                  for typ in types
+                                  if verifier.get_checks_count(typ) != 0)
+        if not tabletypes:
             # Shouldn't occur....
             raise ValueError("No verification tests defined!")
         parallel = min(parallel, len(tabletypes))

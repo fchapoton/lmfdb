@@ -18,20 +18,20 @@ pqr_re = re.compile(r"^(1)|(p(\^\{(\d+)\})?)(q(\^\{(\d+)\})?)?(r(\^\{(\d+)\})?)?
 def elist_qformatter(elist):
     if isinstance(elist, list):
         return "exponents_of_order=" + str(elist).replace(" ", "")
-    M = pqr_re.fullmatch(elist.replace("$",""))
+    M = pqr_re.fullmatch(elist.replace("$", ""))
     if M is None:
         raise ValueError(elist)
     L = []
-    if M.group(1) is not None: # nontrivial group
-        for i in range(2, len(M.groups()), 3):
-            if M.group(i) is not None:
-                L.append(1 if M.group(i+1) is None else int(M.group(i+2)))
+    if M.group(1) is not None:  # nontrivial group
+        L = [1 if M.group(i + 1) is None else int(M.group(i + 2))
+             for i in range(2, len(M.groups()), 3)
+             if M.group(i) is not None]
     return elist_qformatter(L)
 
+
 def nilp_formatter(nilp):
-    if nilp == -1:
-        return "not"
-    return str(nilp)
+    return "not" if nilp == -1 else str(nilp)
+
 
 def nilp_qformatter(nilp):
     if nilp == "not":

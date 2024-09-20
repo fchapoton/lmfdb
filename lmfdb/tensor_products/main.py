@@ -19,8 +19,7 @@ from lmfdb.lfunctions.main import render_lfunction_exception
 def get_bread(breads=[]):
     bc = [("L-functions", url_for("l_functions.index")),
           ("Tensor Products", url_for(".index"))]
-    for b in breads:
-        bc.append(b)
+    bc.extend(breads)
     return bc
 
 @tensor_products_page.route("/")
@@ -47,11 +46,9 @@ def show():
     for _, v in objLinks.items():
         objPaths.append(v.split('/'))
 
-    galoisRepObjs = []
-    for p in objPaths:
-        galoisRepObjs.append(galois_rep_from_path(p))
+    galoisRepObjs = [galois_rep_from_path(p) for p in objPaths]
 
-    if len(galoisRepObjs)==1:
+    if len(galoisRepObjs) == 1:
         gr = galoisRepObjs[0]
         gr.lfunction()
 

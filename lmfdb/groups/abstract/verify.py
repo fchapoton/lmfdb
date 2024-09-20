@@ -51,10 +51,9 @@ def test_small_gps(sample_gp):
 
         # check degrees
         irr_stats = sample_gp['irrep_stats']
-        degLMFDB = []
-        for i in range(len(irr_stats)):
-            for j in range(irr_stats[i][1]):
-                degLMFDB.append(irr_stats[i][0])
+        degLMFDB = [irr_stats[i][0]
+                    for i in range(len(irr_stats))
+                    for j in range(irr_stats[i][1])]
         stupid_str_2 = 'List(Irr(SmallGroup(' + id_nums[0] + ',' + id_nums[1] + ')), z -> z[1])'
         degs = libgap.eval(stupid_str_2)
 

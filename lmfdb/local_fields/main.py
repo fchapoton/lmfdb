@@ -32,8 +32,7 @@ LF_RE = re.compile(r'^\d+\.\d+\.\d+\.\d+$')
 
 def get_bread(breads=[]):
     bc = [("$p$-adic fields", url_for(".index"))]
-    for b in breads:
-        bc.append(b)
+    bc.extend(breads)
     return bc
 
 def learnmore_list():
